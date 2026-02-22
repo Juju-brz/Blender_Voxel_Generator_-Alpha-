@@ -150,6 +150,7 @@ def unregister():
     bpy.utils.unregister_class(VoxelTerrainProperties)
     bpy.utils.unregister_class(Create_Cube)
     bpy.utils.unregister_class(Create_Sphere)
+    bpy.utils.unregister_class(Convert_Voxel)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
 
 if __name__ == "__main__":
