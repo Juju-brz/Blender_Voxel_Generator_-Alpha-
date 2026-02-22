@@ -47,7 +47,15 @@ def ground_generation(ground_num):
             bpy.context.object.name = f"ground"
 
 
+def mesh_to_volume():
+    mesh_to_convert = bpy.context.active_object
+    bpy.ops.object.volume_add(align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+    bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
+    bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
+
     
+
+### CLASS ###
 class OBJECT_OT_create_ground(bpy.types.Operator):
     bl_idname = "object.create_ground"
     bl_label = "Create Ground"
@@ -64,7 +72,7 @@ class OBJECT_OT_create_ground(bpy.types.Operator):
 class VoxelTerrainProperties(bpy.types.PropertyGroup):
     ground_num_slider: bpy.props.IntProperty(
         name="Ground Size",
-        description="Taille de la grille (nombre de cubes depuis le centre)",
+        description="Size_Grid",
         default=5,
         min=1,
         max=20
@@ -90,6 +98,17 @@ class Create_Sphere(bpy.types.Operator):
     def execute(self, context):
         #props = context.scene.voxel_terrain_props
         create_sphere_vox()
+        return {'FINISHED'}
+    
+    
+class mesh_to_Volume(bpy.types.Operator):
+    bl_idname = "object.mesh_to_volume"
+    bl_label = "mesh_to_volume"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        #props = context.scene.voxel_terrain_props
+        mesh_to_volume()
         return {'FINISHED'}
 
 
@@ -128,7 +147,8 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="Geometry")
         layout.operator("object.create_cube_voxel", text="Generate cube")
         layout.operator("object.create_sphere_voxel", text="Generate sphere")
-        layout.operator("object.convert_voxel", text="Convert Voxel")
+        layout.operator("object.convert_voxel", text="Convert to Voxel")
+        layout.operator("object.mesh_to_volume", text="mesh to Volume")
 
 ### UI END ###
 
@@ -142,6 +162,8 @@ def register():
     bpy.utils.register_class(Create_Cube)
     bpy.utils.register_class(Create_Sphere)
     bpy.utils.register_class(Convert_Voxel)
+    bpy.utils.register_class(mesh_to_Volume)
+    
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
 def unregister():
@@ -151,6 +173,7 @@ def unregister():
     bpy.utils.unregister_class(Create_Cube)
     bpy.utils.unregister_class(Create_Sphere)
     bpy.utils.unregister_class(Convert_Voxel)
+    bpy.utils.unregister_class(mesh_to_Volume)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
 
 if __name__ == "__main__":
