@@ -4,14 +4,12 @@ juju Julien BROUZES
 
 import bpy
 
-# Nettoyage de la scène
-bpy.ops.object.select_all(action='SELECT')
-bpy.ops.object.delete(use_global=False, confirm=False)
+## CLEAN ##
+#bpy.ops.object.select_all(action='SELECT')
+#bpy.ops.object.delete(use_global=False, confirm=False)
 
-# Paramètres
 locator_position = [0, 0, 0]
 
-#voxel_shape = null
 
 def create_voxel(biere, name="name"):
     biere = bpy.ops.object.modifier_add(type='REMESH')
@@ -19,6 +17,13 @@ def create_voxel(biere, name="name"):
     biere = bpy.ops.object.modifier_apply(modifier="Remesh")
     biere = bpy.context.active_object
     biere.name = name 
+
+
+def decimate():
+    bpy.ops.object.modifier_add(type='DECIMATE')
+    bpy.context.object.modifiers["Decimate"].decimate_type = 'DISSOLVE'
+    bpy.ops.object.modifier_apply(modifier="Decimate")
+
 
 def create_cube_vox():
     biere = bpy.ops.mesh.primitive_cube_add()
@@ -51,7 +56,6 @@ class OBJECT_OT_create_ground(bpy.types.Operator):
     
     def execute(self, context):
         props = context.scene.voxel_terrain_props
-        # Utiliser la valeur du slider
         ground_num = int(props.ground_num_slider)
         ground_generation(ground_num)
         return {'FINISHED'}
@@ -71,30 +75,40 @@ class VoxelTerrainProperties(bpy.types.PropertyGroup):
 class Create_Cube(bpy.types.Operator):
     bl_idname = "object.create_cube_voxel"
     bl_label = "create_cube_voxel"
-    bl_description = "Generate a voxel ground"
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        props = context.scene.voxel_terrain_props
+        #props = context.scene.voxel_terrain_props
         create_cube_vox()
         return {'FINISHED'}
 
 class Create_Sphere(bpy.types.Operator):
     bl_idname = "object.create_sphere_voxel"
     bl_label = "create_sphere_voxel"
-    bl_description = "Generate a voxel ground"
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        props = context.scene.voxel_terrain_props
+        #props = context.scene.voxel_terrain_props
         create_sphere_vox()
         return {'FINISHED'}
 
 
 ### GEOMETRY CLASS  END ###
 
+## Voxel ##
+class Convert_Voxel(bpy.types.Operator):
+    bl_idname = "object.convert_voxel"
+    bl_label = "convert_voxel"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        #props = context.scene.voxel_terrain_props
+        biere = bpy.context.active_object
+        create_voxel(biere, name="name")
+        return {'FINISHED'}
 
-### UI ###
+
+### UI BEGIN ###
 
 class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
     bl_label = "Voxel Terrain Generation"
@@ -114,9 +128,9 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="Geometry")
         layout.operator("object.create_cube_voxel", text="Generate cube")
         layout.operator("object.create_sphere_voxel", text="Generate sphere")
+        layout.operator("object.convert_voxel", text="Convert Voxel")
 
-
-### UI ###
+### UI END ###
 
 
 
@@ -127,6 +141,7 @@ def register():
     bpy.utils.register_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.register_class(Create_Cube)
     bpy.utils.register_class(Create_Sphere)
+    bpy.utils.register_class(Convert_Voxel)
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
 def unregister():
