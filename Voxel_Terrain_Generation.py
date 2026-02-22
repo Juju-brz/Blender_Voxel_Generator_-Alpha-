@@ -66,7 +66,7 @@ class VoxelTerrainProperties(bpy.types.PropertyGroup):
         max=20
     )
     
-### GEOMETRY CLASS ###
+### GEOMETRY CLASS BEGIN ###
 
 class Create_Cube(bpy.types.Operator):
     bl_idname = "object.create_cube_voxel"
@@ -76,7 +76,6 @@ class Create_Cube(bpy.types.Operator):
     
     def execute(self, context):
         props = context.scene.voxel_terrain_props
-        # Utiliser la valeur du slider
         create_cube_vox()
         return {'FINISHED'}
 
@@ -88,11 +87,11 @@ class Create_Sphere(bpy.types.Operator):
     
     def execute(self, context):
         props = context.scene.voxel_terrain_props
-        # Utiliser la valeur du slider
         create_sphere_vox()
         return {'FINISHED'}
 
-### GEOMETRY CLASS ###
+
+### GEOMETRY CLASS  END ###
 
 
 ### UI ###
@@ -112,6 +111,7 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="Terrain Settings")
         layout.prop(props, "ground_num_slider", text="Grid Size")
         layout.operator("object.create_ground", text="Generate Ground")
+        layout.label(text="Geometry")
         layout.operator("object.create_cube_voxel", text="Generate cube")
         layout.operator("object.create_sphere_voxel", text="Generate sphere")
 
@@ -139,3 +139,8 @@ def unregister():
 
 if __name__ == "__main__":
     register()
+    
+
+"""
+juju Julien BROUZES
+"""
