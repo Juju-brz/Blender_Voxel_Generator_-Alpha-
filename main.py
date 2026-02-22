@@ -1,13 +1,21 @@
 """
 juju Julien BROUZES
 """
+bl_info = {
+    "name": "Voxel & Volume",
+    "blender": (5, 0, 1),
+    "category": "Object",
+    "version": (0, 0, 1, 0)
+}
 
 import bpy
+
 
 ## CLEAN ##
 #bpy.ops.object.select_all(action='SELECT')
 #bpy.ops.object.delete(use_global=False, confirm=False)
 
+scene = bpy.context.scene
 locator_position = [0, 0, 0]
 
 
@@ -48,12 +56,17 @@ def ground_generation(ground_num):
 
 
 def mesh_to_volume():
+    volume_collection = bpy.data.collections.new("volume")
+    bpy.context.scene.collection.children.link(volume_collection)
+    
     mesh_to_convert = bpy.context.active_object
-    bpy.ops.object.volume_add(align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+    bpy.ops.object.volume_add()
     bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
     bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
-
     
+    volume_collection.objects.link(bpy.context.active_object)
+    #collection.objects.unlink(bpy.context.active_object)
+
 
 ### CLASS ###
 class OBJECT_OT_create_ground(bpy.types.Operator):
@@ -148,7 +161,9 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.operator("object.create_cube_voxel", text="Generate cube")
         layout.operator("object.create_sphere_voxel", text="Generate sphere")
         layout.operator("object.convert_voxel", text="Convert to Voxel")
+        layout.label(text="Select Mesh")
         layout.operator("object.mesh_to_volume", text="mesh to Volume")
+        
 
 ### UI END ###
 
