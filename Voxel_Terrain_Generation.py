@@ -25,7 +25,10 @@ def create_cube_vox():
     create_voxel(biere, name="voxel_cube")
 
 
-
+def create_sphere_vox():
+    biere = bpy.ops.mesh.primitive_uv_sphere_add()
+    create_voxel(biere, name="voxel_sphere")
+    
 def ground_generation(ground_num):
     
     for i in range(-ground_num, ground_num + 1):
@@ -63,6 +66,8 @@ class VoxelTerrainProperties(bpy.types.PropertyGroup):
         max=20
     )
     
+### GEOMETRY CLASS ###
+
 class Create_Cube(bpy.types.Operator):
     bl_idname = "object.create_cube_voxel"
     bl_label = "create_cube_voxel"
@@ -75,7 +80,22 @@ class Create_Cube(bpy.types.Operator):
         create_cube_vox()
         return {'FINISHED'}
 
+class Create_Sphere(bpy.types.Operator):
+    bl_idname = "object.create_sphere_voxel"
+    bl_label = "create_sphere_voxel"
+    bl_description = "Generate a voxel ground"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        props = context.scene.voxel_terrain_props
+        # Utiliser la valeur du slider
+        create_sphere_vox()
+        return {'FINISHED'}
 
+### GEOMETRY CLASS ###
+
+
+### UI ###
 
 class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
     bl_label = "Voxel Terrain Generation"
@@ -93,6 +113,10 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.prop(props, "ground_num_slider", text="Grid Size")
         layout.operator("object.create_ground", text="Generate Ground")
         layout.operator("object.create_cube_voxel", text="Generate cube")
+        layout.operator("object.create_sphere_voxel", text="Generate sphere")
+
+
+### UI ###
 
 
 
@@ -102,12 +126,15 @@ def register():
     bpy.utils.register_class(VoxelTerrainProperties)
     bpy.utils.register_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.register_class(Create_Cube)
+    bpy.utils.register_class(Create_Sphere)
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
 def unregister():
     del bpy.types.Scene.voxel_terrain_props
     bpy.utils.unregister_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.unregister_class(VoxelTerrainProperties)
+    bpy.utils.unregister_class(Create_Cube)
+    bpy.utils.unregister_class(Create_Sphere)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
 
 if __name__ == "__main__":
