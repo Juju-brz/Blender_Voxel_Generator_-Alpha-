@@ -63,6 +63,7 @@ def mesh_to_volume():
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
     bpy.ops.object.volume_add()
+    mesh_to_convert.hide_viewport = True
     bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
     bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
     
