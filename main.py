@@ -60,7 +60,7 @@ def mesh_to_volume():
     bpy.context.scene.collection.children.link(volume_collection)
     
     mesh_to_convert = bpy.context.active_object
-    olume_collection.objects.link(bpy.context.active_object)
+    volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
     bpy.ops.object.volume_add()
     bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
