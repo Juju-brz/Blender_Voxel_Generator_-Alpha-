@@ -186,8 +186,8 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="VOLUME")
         layout.label(text="Select Mesh")
         layout.operator("object.mesh_to_volume", text="mesh to Volume")
-        layout.label(text="Volume to Mesh")
         layout.operator("object.volume_to_mesh", text="volume to Mesh")
+        layout.label(text='truc')
         #object.volume_to_mesh
         #layout.operator
         
@@ -205,6 +205,8 @@ def register():
     bpy.utils.register_class(Create_Sphere)
     bpy.utils.register_class(Convert_Voxel)
     bpy.utils.register_class(mesh_to_Volume)
+    bpy.utils.register_class(volume_to_Mesh)
+
     
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
@@ -216,6 +218,7 @@ def unregister():
     bpy.utils.unregister_class(Create_Sphere)
     bpy.utils.unregister_class(Convert_Voxel)
     bpy.utils.unregister_class(mesh_to_Volume)
+    bpy.utils.unregister_class(volume_to_Mesh)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
 
 if __name__ == "__main__":
