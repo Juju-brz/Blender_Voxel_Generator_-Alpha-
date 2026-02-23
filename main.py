@@ -54,7 +54,7 @@ def ground_generation(ground_num):
             bpy.ops.mesh.primitive_cube_add(location=(x_pos, y_pos, z_pos) )
             bpy.context.object.name = f"ground"
 
-
+## VOLUME ##
 def mesh_to_volume():
     volume_collection = bpy.data.collections.new("volume")
     bpy.context.scene.collection.children.link(volume_collection)
@@ -69,6 +69,16 @@ def mesh_to_volume():
     
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
+
+
+def volume_to_mesh():
+    vol_to_convert = bpy.context.active_object
+    bpy.ops.mesh.primitive_cube_add()
+    bpy.ops.object.modifier_add(type='VOLUME_TO_MESH')
+
+    bpy.context.object.modifiers["Volume to Mesh"].object = vol_to_convert
+
+
 
 ### CLASS ###
 class OBJECT_OT_create_ground(bpy.types.Operator):
@@ -126,6 +136,16 @@ class mesh_to_Volume(bpy.types.Operator):
         mesh_to_volume()
         return {'FINISHED'}
 
+class volume_to_Mesh(bpy.types.Operator):
+    bl_idname = "object.volume_to_mesh"
+    bl_label = "volume_to_mesh"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        #props = context.scene.voxel_terrain_props
+        volume_to_mesh()
+        return {'FINISHED'}
+
 
 ### GEOMETRY CLASS  END ###
 
@@ -163,8 +183,13 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.operator("object.create_cube_voxel", text="Generate cube")
         layout.operator("object.create_sphere_voxel", text="Generate sphere")
         layout.operator("object.convert_voxel", text="Convert to Voxel")
+        layout.label(text="VOLUME")
         layout.label(text="Select Mesh")
         layout.operator("object.mesh_to_volume", text="mesh to Volume")
+        layout.label(text="Volume to Mesh")
+        layout.operator("object.volume_to_mesh", text="volume to Mesh")
+        #object.volume_to_mesh
+        #layout.operator
         
 
 ### UI END ###
