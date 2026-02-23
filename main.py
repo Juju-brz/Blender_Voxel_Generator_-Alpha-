@@ -69,14 +69,21 @@ def mesh_to_volume():
     
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
+    bpy.ops.object.empty_add(scale=(4, 4, 4))
+    bpy.ops.object.volume_add()
+    bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
+
 
 
 def volume_to_mesh():
     vol_to_convert = bpy.context.active_object
     bpy.ops.mesh.primitive_cube_add()
+    obj = bpy.context.active_object
+    obj.name = "volume_mesh"
     bpy.ops.object.modifier_add(type='VOLUME_TO_MESH')
 
     bpy.context.object.modifiers["Volume to Mesh"].object = vol_to_convert
+    bpy.ops.object.modifier_apply(modifier="Volume to Mesh")
 
 
 
@@ -187,7 +194,7 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="Select Mesh")
         layout.operator("object.mesh_to_volume", text="mesh to Volume")
         layout.operator("object.volume_to_mesh", text="volume to Mesh")
-        layout.label(text='truc')
+        #layout.label(text='truc')
         #object.volume_to_mesh
         #layout.operator
         
