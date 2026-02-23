@@ -60,19 +60,28 @@ def mesh_to_volume():
     bpy.context.scene.collection.children.link(volume_collection)
     
     mesh_to_convert = bpy.context.active_object
+    mesh_to_convert.name = "mesh_volume" 
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
     bpy.ops.object.volume_add()
-    mesh_to_convert.hide_viewport = True
+    #mesh_to_convert.hide_viewport = True
     bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
     bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
     
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
+    
+    # CREATE EMPTY
     bpy.ops.object.empty_add(scale=(4, 4, 4))
-    bpy.ops.object.volume_add()
+    volume_collection.objects.link(bpy.context.active_object)
+    #bpy.ops.object.volume_add()
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
+    toggle_mesh_visibility()
 
+def toggle_mesh_visibility():
+    obj = bpy.data.objects["mesh_volume"]
+
+    obj.hide_viewport = not obj.hide_viewport
 
 
 def volume_to_mesh():
@@ -118,7 +127,7 @@ class Create_Cube(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        #props = context.scene.voxel_terrain_props
+        
         create_cube_vox()
         return {'FINISHED'}
 
@@ -128,7 +137,7 @@ class Create_Sphere(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        #props = context.scene.voxel_terrain_props
+        
         create_sphere_vox()
         return {'FINISHED'}
     
@@ -139,9 +148,21 @@ class mesh_to_Volume(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        #props = context.scene.voxel_terrain_props
+        
         mesh_to_volume()
         return {'FINISHED'}
+
+
+class hide_mesh(bpy.types.Operator):
+    bl_idname = "object.hide_mesh"
+    bl_label = "hide_mesh"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        #props = context.scene.voxel_terrain_props
+        toggle_mesh_visibility()
+        return {'FINISHED'}
+
 
 class volume_to_Mesh(bpy.types.Operator):
     bl_idname = "object.volume_to_mesh"
@@ -172,7 +193,7 @@ class Convert_Voxel(bpy.types.Operator):
 ### UI BEGIN ###
 
 class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
-    bl_label = "Voxel Terrain Generation"
+    bl_label = "Voxel & Volume Generation"
     bl_idname = "VIEW3D_PT_Voxel_Terrain_Generation"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -193,7 +214,10 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.label(text="VOLUME")
         layout.label(text="Select Mesh")
         layout.operator("object.mesh_to_volume", text="mesh to Volume")
+        layout.operator("object.hide_mesh", text="hide / unhide mesh")
+        layout.label(text='Select volume')
         layout.operator("object.volume_to_mesh", text="volume to Mesh")
+        
         #layout.label(text='truc')
         #object.volume_to_mesh
         #layout.operator
@@ -213,7 +237,7 @@ def register():
     bpy.utils.register_class(Convert_Voxel)
     bpy.utils.register_class(mesh_to_Volume)
     bpy.utils.register_class(volume_to_Mesh)
-
+    bpy.utils.register_class(hide_mesh)
     
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
@@ -227,6 +251,7 @@ def unregister():
     bpy.utils.unregister_class(mesh_to_Volume)
     bpy.utils.unregister_class(volume_to_Mesh)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
+    bpy.utils.unregister_class(hide_mesh)
 
 if __name__ == "__main__":
     register()
