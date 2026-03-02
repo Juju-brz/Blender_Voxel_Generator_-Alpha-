@@ -12,8 +12,9 @@ import bpy
 
 
 ## CLEAN ##
-#bpy.ops.object.select_all(action='SELECT')
-#bpy.ops.object.delete(use_global=False, confirm=False)
+def clean_scene():
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False, confirm=False)
 
 scene = bpy.context.scene
 locator_position = [0, 0, 0]
@@ -54,7 +55,7 @@ def ground_generation(ground_num):
             bpy.ops.mesh.primitive_cube_add(location=(x_pos, y_pos, z_pos) )
             bpy.context.object.name = f"ground"
 
-## VOLUME ##
+### VOLUME ###
 def mesh_to_volume():
     volume_collection = bpy.data.collections.new("volume")
     bpy.context.scene.collection.children.link(volume_collection)
@@ -72,15 +73,20 @@ def mesh_to_volume():
     bpy.ops.collection.objects_remove_active()
     
     # CREATE EMPTY
-    bpy.ops.object.empty_add(scale=(4, 4, 4))
-    volume_collection.objects.link(bpy.context.active_object)
+    empty = bpy.ops.object.empty_add(scale=(4, 4, 4))
+    empty = volume_collection.objects.link(bpy.context.active_object)
+    #empty = bpy.ops.collection.objects_remove_active()
     #bpy.ops.object.volume_add()
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
     toggle_mesh_visibility()
 
+def new_collection(a, collection):
+    a = collection.objects.link(bpy.context.active_object)
+    
+    
+
 def toggle_mesh_visibility():
     obj = bpy.data.objects["mesh_volume"]
-
     obj.hide_viewport = not obj.hide_viewport
 
 
@@ -118,7 +124,8 @@ class VoxelTerrainProperties(bpy.types.PropertyGroup):
         min=1,
         max=20
     )
-    
+
+
 ### GEOMETRY CLASS BEGIN ###
 
 class Create_Cube(bpy.types.Operator):
@@ -170,8 +177,16 @@ class volume_to_Mesh(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
     
     def execute(self, context):
-        #props = context.scene.voxel_terrain_props
         volume_to_mesh()
+        return {'FINISHED'}
+
+class clean_scene(bpy.types.Operator):
+    bl_idname = "object.clean_scene"
+    bl_label = "clean_scene"
+    bl_options = {'REGISTER', 'UNDO'}
+    
+    def execute(self, context):
+        clean_scene()
         return {'FINISHED'}
 
 
@@ -204,6 +219,7 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         props = context.scene.voxel_terrain_props
         
         
+        layout.operator("object.clean_scene", text="Clean Scene (beta)")
         layout.label(text="Terrain Settings")
         layout.prop(props, "ground_num_slider", text="Grid Size")
         layout.operator("object.create_ground", text="Generate Ground")
@@ -226,7 +242,6 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
 ### UI END ###
 
 
-
 # REGISTER
 def register():
     bpy.utils.register_class(OBJECT_OT_create_ground)
@@ -238,6 +253,8 @@ def register():
     bpy.utils.register_class(mesh_to_Volume)
     bpy.utils.register_class(volume_to_Mesh)
     bpy.utils.register_class(hide_mesh)
+    bpy.utils.register_class(clean_scene)
+    
     
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
@@ -252,6 +269,7 @@ def unregister():
     bpy.utils.unregister_class(volume_to_Mesh)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
     bpy.utils.unregister_class(hide_mesh)
+    bpy.utils.unregister_class(clean_scene)
 
 if __name__ == "__main__":
     register()
