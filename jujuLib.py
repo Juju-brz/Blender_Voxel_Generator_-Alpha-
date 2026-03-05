@@ -1,10 +1,11 @@
+import bpy
 ## CLEAN ##
 def clean_scene():
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete(use_global=False, confirm=False)
 
-scene = bpy.context.scene
-locator_position = [0, 0, 0]
+#scene = bpy.context.scene
+#locator_position = [0, 0, 0]
 
 
 def create_voxel(biere, name="name"):
@@ -86,3 +87,10 @@ def volume_to_mesh():
 
     bpy.context.object.modifiers["Volume to Mesh"].object = vol_to_convert
     bpy.ops.object.modifier_apply(modifier="Volume to Mesh")
+
+def simulation_node():
+    bpy.context.area.ui_type = 'GeometryNodeTree'
+    bpy.ops.node.new_geometry_nodes_modifier()
+    #bpy.ops.node.add_zone(use_transform=True, input_node_type="GeometryNodeSimulationInput", output_node_type="GeometryNodeSimulationOutput", add_default_geometry_link=True)
+    bpy.data.node_groups["Geometry Nodes"].name = "Simulation Nodes"
+

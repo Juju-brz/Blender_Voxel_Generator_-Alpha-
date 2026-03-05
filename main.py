@@ -9,110 +9,46 @@ bl_info = {
 }
 
 import bpy
-#from .jujuLib import *
-
-import os
 import sys
-import importlib
-# ✅ Option 1 — Utilise des slashes normaux /
-folder = os.path.dirname(os.path.abspath(__file__))
+import os
 
-# Même dossier que main.py
-sys.path.append(folder)
-import jujuLib
-importlib.reload(jujuLib)
+### IMPORTATION TO LIB THANKS TO MISTRAL AI ###
 
-
-"""
-## CLEAN ##
-def clean_scene():
-    bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete(use_global=False, confirm=False)
-
-scene = bpy.context.scene
-locator_position = [0, 0, 0]
+blend_path = bpy.data.filepath
+if not blend_path:
+    print("ERREUR : Le fichier .blend n'est pas enregistré ! Enregistrez-le dans le même dossier que jujuLib.py.")
+    sys.exit()
 
 
-def create_voxel(biere, name="name"):
-    biere = bpy.ops.object.modifier_add(type='REMESH')
-    biere = bpy.context.object.modifiers["Remesh"].voxel_size = 0.123
-    biere = bpy.ops.object.modifier_apply(modifier="Remesh")
-    biere = bpy.context.active_object
-    biere.name = name 
+script_dir = os.path.dirname(blend_path)
+print("Dossier du fichier .blend :", script_dir)
+
+if script_dir not in sys.path:
+    sys.path.append(script_dir)
 
 
-def decimate():
-    bpy.ops.object.modifier_add(type='DECIMATE')
-    bpy.context.object.modifiers["Decimate"].decimate_type = 'DISSOLVE'
-    bpy.ops.object.modifier_apply(modifier="Decimate")
 
 
-def create_cube_vox():
-    biere = bpy.ops.mesh.primitive_cube_add()
-    create_voxel(biere, name="voxel_cube")
+
+if "jujuLib.py" in os.listdir(script_dir):
+
+else:
+    print("ERROR")
 
 
-def create_sphere_vox():
-    biere = bpy.ops.mesh.primitive_uv_sphere_add()
-    create_voxel(biere, name="voxel_sphere")
-    
-def ground_generation(ground_num):
-    
-    for i in range(-ground_num, ground_num + 1):
-        for j in range(-ground_num, ground_num + 1):
-            x_pos = locator_position[0] + (i * 2)
-            y_pos = locator_position[1] + (j * 2)
-            z_pos = locator_position[2]
-            
-            
-            bpy.ops.mesh.primitive_cube_add(location=(x_pos, y_pos, z_pos) )
-            bpy.context.object.name = f"ground"
+try:
+    import jujuLib
 
-### VOLUME ###
-def mesh_to_volume():
-    volume_collection = bpy.data.collections.new("volume")
-    bpy.context.scene.collection.children.link(volume_collection)
-    
-    mesh_to_convert = bpy.context.active_object
-    mesh_to_convert.name = "mesh_volume" 
-    volume_collection.objects.link(bpy.context.active_object)
-    bpy.ops.collection.objects_remove_active()
-    bpy.ops.object.volume_add()
-    #mesh_to_convert.hide_viewport = True
-    bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
-    bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
-    
-    volume_collection.objects.link(bpy.context.active_object)
-    bpy.ops.collection.objects_remove_active()
-    
-    # CREATE EMPTY
-    empty = bpy.ops.object.empty_add(scale=(4, 4, 4))
-    empty = volume_collection.objects.link(bpy.context.active_object)
-    #empty = bpy.ops.collection.objects_remove_active()
-    #bpy.ops.object.volume_add()
-    bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
-    toggle_mesh_visibility()
-
-def new_collection(a, collection):
-    a = collection.objects.link(bpy.context.active_object)
-    
-    
-
-def toggle_mesh_visibility():
-    obj = bpy.data.objects["mesh_volume"]
-    obj.hide_viewport = not obj.hide_viewport
+except ModuleNotFoundError:
+    print("ERROR")
 
 
-def volume_to_mesh():
-    vol_to_convert = bpy.context.active_object
-    bpy.ops.mesh.primitive_cube_add()
-    obj = bpy.context.active_object
-    obj.name = "volume_mesh"
-    bpy.ops.object.modifier_add(type='VOLUME_TO_MESH')
+### IMPORTATION TO LIB THANKS TO MISTRAL AI ###
 
-    bpy.context.object.modifiers["Volume to Mesh"].object = vol_to_convert
-    bpy.ops.object.modifier_apply(modifier="Volume to Mesh")
-"""
+#def simulation_node():
+    #bpy.context.area.ui_type = 'GeometryNodeTree'
+    #bpy.ops.node.new_geometry_nodes_modifier()
+    #bpy.ops.node.add_zone(use_transform=True, input_node_type="GeometryNodeSimulationInput", output_node_type="GeometryNodeSimulationOutput", add_default_geometry_link=True)
 
 
 ### CLASS ###
@@ -202,6 +138,14 @@ class clean_scene(bpy.types.Operator):
         jujuLib.clean_scene()
         return {'FINISHED'}
 
+class create_simulation_node(bpy.types.Operator):
+    bl_idname = "object.create_simulation_node"
+    bl_label = "create_simulation_node"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        jujuLib.simulation_node()
+        return {'FINISHED'}
 
 ### GEOMETRY CLASS  END ###
 
@@ -246,7 +190,8 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.operator("object.hide_mesh", text="hide / unhide mesh")
         layout.label(text='Select volume')
         layout.operator("object.volume_to_mesh", text="volume to Mesh")
-        
+        layout.operator("object.create_simulation_node", text="create_simulation_node")
+
         #layout.label(text='truc')
         #object.volume_to_mesh
         #layout.operator
@@ -267,8 +212,7 @@ def register():
     bpy.utils.register_class(volume_to_Mesh)
     bpy.utils.register_class(hide_mesh)
     bpy.utils.register_class(clean_scene)
-    
-    
+    bpy.utils.register_class(create_simulation_node)
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
 def unregister():
@@ -283,6 +227,7 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
     bpy.utils.unregister_class(hide_mesh)
     bpy.utils.unregister_class(clean_scene)
+    bpy.utils.unregister_class(create_simulation_node)
 
 if __name__ == "__main__":
     register()

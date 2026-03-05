@@ -23,3 +23,6 @@ def creer_cube_geo():
     links.new(cube.outputs['Mesh'], g_out.inputs['Geometry'])
 
     return ng
+
+def hello():
+    print("Hello from jujuLib!")
