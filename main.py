@@ -5,7 +5,7 @@ bl_info = {
     "name": "Voxel & Volume",
     "blender": (5, 0, 1),
     "category": "Object",
-    "version": (0, 0, 1, 0)
+    "version": (0, 0, 2, 0)
 }
 
 import bpy
@@ -30,10 +30,10 @@ if script_dir not in sys.path:
 
 
 
-if "juju.py" in os.listdir(script_dir):
+#if "juju.py" in os.listdir(script_dir):
 
-else:
-    print("ERROR")
+#else:
+#    print("ERROR")
 
 
 try:
@@ -50,6 +50,8 @@ except ModuleNotFoundError:
     #bpy.ops.node.new_geometry_nodes_modifier()
     #bpy.ops.node.add_zone(use_transform=True, input_node_type="GeometryNodeSimulationInput", output_node_type="GeometryNodeSimulationOutput", add_default_geometry_link=True)
 
+
+obj = bpy.context.active_object
 
 ### CLASS ###
 class OBJECT_OT_create_ground(bpy.types.Operator):
@@ -158,7 +160,7 @@ class Convert_Voxel(bpy.types.Operator):
     def execute(self, context):
         #props = context.scene.voxel_terrain_props
         biere = bpy.context.active_object
-        create_voxel(biere, name="name")
+        juju.create_voxel(biere, name="name")
         return {'FINISHED'}
 
 

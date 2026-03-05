@@ -1,4 +1,7 @@
 import bpy
+
+obj = bpy.context.active_object
+
 ## CLEAN ##
 def clean_scene():
     bpy.ops.object.select_all(action='SELECT')
@@ -44,6 +47,16 @@ def ground_generation(ground_num):
             bpy.context.object.name = f"ground"
 
 ### VOLUME ###
+def volume_displacement():
+    #bpy.context.space_data.context = 'MODIFIER'
+    bpy.ops.object.modifier_add(type='VOLUME_DISPLACE')
+    #bpy.ops.texture.new()
+    tex = bpy.data.textures.new("VolumeTex", type='CLOUDS')
+    #mod = obj.modifiers["Volume Displace"]
+    #mod.texture = tex
+    #text = bpy.data.textures.new("VolumeTex", type='CLOUDS')
+
+
 def mesh_to_volume():
     volume_collection = bpy.data.collections.new("volume")
     bpy.context.scene.collection.children.link(volume_collection)
@@ -59,6 +72,9 @@ def mesh_to_volume():
     
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
+
+    ## FUNCTION ##
+    volume_displacement()
     
     # CREATE EMPTY
     empty = bpy.ops.object.empty_add(scale=(4, 4, 4))
@@ -93,4 +109,9 @@ def simulation_node():
     bpy.ops.node.new_geometry_nodes_modifier()
     #bpy.ops.node.add_zone(use_transform=True, input_node_type="GeometryNodeSimulationInput", output_node_type="GeometryNodeSimulationOutput", add_default_geometry_link=True)
     bpy.data.node_groups["Geometry Nodes"].name = "Simulation Nodes"
+    bpy.ops.node.add_node(settings=[{"name":"node_tree", "value":"bpy.data.node_groups['Simulation Nodes']"}, {"name":"width", "value":"140"}, {"name":"name", "value":"'Simulation Nodes'"}], use_transform=True, type="GeometryNodeGroup")
+
+
+
+
 
