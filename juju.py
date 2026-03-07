@@ -162,12 +162,24 @@ def create_leaf_shape():
 
     obj =  bpy.ops.object.transforms_to_deltas(mode='ALL')
 
-"""
-node
-bpy.ops.node.new_geometry_nodes_modifier()
-bpy.ops.node.add_group_asset(asset_library_type='ESSENTIALS', asset_library_identifier="", relative_asset_identifier="nodes/geometry_nodes_essentials.blend/NodeTree/Curve to Tube")
-bpy.ops.node.insert_offset()
-bpy.ops.node.add_node(use_transform=True, type="GeometryNodeJoinGeometry")
 
-bpy.ops.node.link(detach=False, drag_start=())
-"""
+
+def curve_test():
+    #fibonnaci
+    val0 = 1.0
+    val1 = 1.0
+    old_value = 1.0
+    #bpy.ops.curve.extrude_move(CURVE_OT_extrude={"mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(-0.554322, -0.620455, 0.0231373)})
+    for i in range(8):
+        bpy.ops.curve.extrude_move(CURVE_OT_extrude={"mode":'TRANSLATION'}, TRANSFORM_OT_translate={"value":(val0, val0, val0)})
+        old_value = val0
+        val0 += val1
+        #val0 = val0 * -val0 # POS TO NEG
+        val1 = old_value
+        print(val0)
+
+def newfunc():
+    bpy.ops.curve.primitive_bezier_curve_add(enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
+    bpy.ops.object.editmode_toggle()
+    bpy.ops.curve.delete(type='VERT')
+    bpy.ops.transform.translate(value=(-1, -0, -0))

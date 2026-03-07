@@ -282,6 +282,7 @@ def unregister():
     bpy.utils.unregister_class(subdivision_mesh)
     bpy.utils.unregister_class(draw_curve)
     bpy.utils.unregister_class(create_leaf)
+    bpy.utils.unregister_class(NODE_OT_create_trunk
 
 if __name__ == "__main__":
     register()

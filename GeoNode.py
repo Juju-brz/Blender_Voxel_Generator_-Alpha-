@@ -3,6 +3,8 @@ import mathutils
 import os
 import typing
 
+# Ok we will making group node for making like a libraries
+
 
 # Import node groups from Blender essentials library
 datafiles_path = bpy.utils.system_resource('DATAFILES')
