@@ -287,11 +287,11 @@ class NODE_PT_juju_panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.label(text="Mes Nodes :", icon='NODETREE')
+        layout.label(text="My Nodes :", icon='NODETREE')
         layout.separator()
 
         # Bouton qui lance l'operator
-        layout.operator("node.juju_operator", text="Créer Nodes", icon='ADD')
+        layout.operator("node.juju_operator", text="Create Nodes", icon='ADD')
 
 
 ### UI END ###
