@@ -40,6 +40,7 @@ if script_dir not in sys.path:
 
 try:
     import juju
+    import GeoNode
 
 except ModuleNotFoundError:
     print("ERROR")
@@ -104,7 +105,7 @@ class Create_Sphere(bpy.types.Operator):
         return {'FINISHED'}
     
     
-class mesh_to_Volume(bpy.types.Operator):
+class MESH_OT_mesh_to_Volume(bpy.types.Operator):
     bl_idname = "object.mesh_to_volume"
     bl_label = "mesh_to_volume"
     bl_options = {'REGISTER', 'UNDO'}
@@ -196,6 +197,15 @@ class create_leaf(bpy.types.Operator):
         juju.create_leaf()
         return {'FINISHED'}
 
+class NODE_OT_create_trunk(bpy.types.Operator):
+    bl_idname = "object.create_trunk"
+    bl_label = "create_trunk"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.create_trunk(node_tree_names)
+        return {'FINISHED'}
 
 ### UI BEGIN ###
 
@@ -228,10 +238,10 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
         layout.operator("object.subdivision_mesh", text="Subdivision_mesh")
         layout.operator("object.create_simulation_node", text="create_simulation_node")
 
-        layout.label(text='Curve')
+        layout.label(text='Create Plant')
         layout.operator("object.draw_curve", text="Draw Curve")
         layout.operator("object.create_leaf", text="Draw leaf")
-
+        layout.operator("object.create_trunk", text="create_trunk")
 
 
         #layout.label(text='truc')
@@ -250,7 +260,7 @@ def register():
     bpy.utils.register_class(Create_Cube)
     bpy.utils.register_class(Create_Sphere)
     bpy.utils.register_class(Convert_Voxel)
-    bpy.utils.register_class(mesh_to_Volume)
+    bpy.utils.register_class(MESH_OT_mesh_to_Volume)
     bpy.utils.register_class(volume_to_Mesh)
     bpy.utils.register_class(hide_mesh)
     bpy.utils.register_class(clean_scene)
@@ -259,8 +269,7 @@ def register():
     bpy.utils.register_class(subdivision_mesh)
     bpy.utils.register_class(draw_curve)
     bpy.utils.register_class(create_leaf)
-    create_leaf
-    draw_curve
+    bpy.utils.register_class(NODE_OT_create_trunk
     #script_dir = truc()
 
 def unregister():
@@ -270,7 +279,7 @@ def unregister():
     bpy.utils.unregister_class(Create_Cube)
     bpy.utils.unregister_class(Create_Sphere)
     bpy.utils.unregister_class(Convert_Voxel)
-    bpy.utils.unregister_class(mesh_to_Volume)
+    bpy.utils.unregister_class(MESH_OT_mesh_to_Volume)
     bpy.utils.unregister_class(volume_to_Mesh)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
     bpy.utils.unregister_class(hide_mesh)

@@ -18,7 +18,7 @@ def create_voxel(biere, name="name"):
     biere = bpy.context.object.modifiers["Remesh"].voxel_size = 0.123
     biere = bpy.ops.object.modifier_apply(modifier="Remesh")
     biere = bpy.context.active_object
-    biere.name = name 
+    biere.name = name
 
 
 def decimate():
@@ -35,16 +35,16 @@ def create_cube_vox():
 def create_sphere_vox():
     biere = bpy.ops.mesh.primitive_uv_sphere_add()
     create_voxel(biere, name="voxel_sphere")
-    
+
 def ground_generation(ground_num):
-    
+
     for i in range(-ground_num, ground_num + 1):
         for j in range(-ground_num, ground_num + 1):
             x_pos = locator_position[0] + (i * 2)
             y_pos = locator_position[1] + (j * 2)
             z_pos = locator_position[2]
-            
-            
+
+
             bpy.ops.mesh.primitive_cube_add(location=(x_pos, y_pos, z_pos) )
             bpy.context.object.name = f"ground"
 
@@ -62,22 +62,22 @@ def volume_displacement():
 def mesh_to_volume():
     volume_collection = bpy.data.collections.new("volume")
     bpy.context.scene.collection.children.link(volume_collection)
-    
+
     mesh_to_convert = bpy.context.active_object
-    mesh_to_convert.name = "mesh_volume" 
+    mesh_to_convert.name = "mesh_volume"
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
     bpy.ops.object.volume_add()
     #mesh_to_convert.hide_viewport = True
     bpy.ops.object.modifier_add(type='MESH_TO_VOLUME')
     bpy.context.object.modifiers["Mesh to Volume"].object = mesh_to_convert
-    
+
     volume_collection.objects.link(bpy.context.active_object)
     bpy.ops.collection.objects_remove_active()
 
     ## FUNCTION ##
     volume_displacement()
-    
+
     # CREATE EMPTY
     empty = bpy.ops.object.empty_add(scale=(4, 4, 4))
     empty = volume_collection.objects.link(bpy.context.active_object)
@@ -88,8 +88,8 @@ def mesh_to_volume():
 
 def new_collection(a, collection):
     a = collection.objects.link(bpy.context.active_object)
-    
-    
+
+
 
 def toggle_mesh_visibility():
     obj = bpy.data.objects["mesh_volume"]
@@ -137,7 +137,7 @@ def draw_curve():
     obj = bpy.ops.curve.delete(type='VERT')
     #obj.name = "plant"
     curve = obj
-    bpy.ops.wm.tool_set_by_id(name="builtin.craw")
+    bpy.ops.wm.tool_set_by_id(name="builtin.draw")
 
 def create_leaf():
     create_leaf_shape()
@@ -148,9 +148,9 @@ def create_leaf():
     bpy.context.object.modifiers["Array"]["Socket_33"] = 1
     bpy.context.object.modifiers["Array"]["Socket_27"] = bpy.data.objects[curve]
     bpy.context.object.modifiers["Array"]["Socket_17"] = True
-    bpy.context.object.modifiers["Array"]["Socket_15"][0] = 50.
-    bpy.context.object.modifiers["Array"]["Socket_15"][1] = 50.
-    bpy.context.object.modifiers["Array"]["Socket_15"][2] = 50.
+    bpy.context.object.modifiers["Array"]["Socket_15"][0] = 140.
+    bpy.context.object.modifiers["Array"]["Socket_15"][1] = 140.
+    bpy.context.object.modifiers["Array"]["Socket_15"][2] = 140.
 
 
 
@@ -161,3 +161,13 @@ def create_leaf_shape():
     obj = bpy.context.object.scale[0] = 0.3
 
     obj =  bpy.ops.object.transforms_to_deltas(mode='ALL')
+
+"""
+node
+bpy.ops.node.new_geometry_nodes_modifier()
+bpy.ops.node.add_group_asset(asset_library_type='ESSENTIALS', asset_library_identifier="", relative_asset_identifier="nodes/geometry_nodes_essentials.blend/NodeTree/Curve to Tube")
+bpy.ops.node.insert_offset()
+bpy.ops.node.add_node(use_transform=True, type="GeometryNodeJoinGeometry")
+
+bpy.ops.node.link(detach=False, drag_start=())
+"""
