@@ -155,7 +155,7 @@ def create_leaf(shapefunc):
     bpy.context.object.modifiers["Array"]["Socket_2"] = 2 #SHAPE
     #bpy.context.object.modifiers["Array"]["Socket_33"] = 'Distance'
     bpy.context.object.modifiers["Array"]["Socket_33"] = 0 #COUNT METHOD
-    bpy.context.object.modifiers["Array"]["Socket_27"] = bpy.data.objects[curve] #tree
+    bpy.context.object.modifiers["Array"]["Socket_27"] = bpy.data.objects["curve"] #tree
     bpy.context.object.modifiers["Array"]["Socket_17"] = True
     bpy.context.object.modifiers["Array"]["Socket_15"][0] = 140.
     bpy.context.object.modifiers["Array"]["Socket_15"][1] = 140.
