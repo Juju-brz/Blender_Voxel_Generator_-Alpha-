@@ -178,7 +178,7 @@ class Convert_Voxel(bpy.types.Operator):
         return {'FINISHED'}
 
 
-### CURVES ###
+### PLANT GENERATOR ###
 class draw_curve(bpy.types.Operator):
     bl_idname = "object.draw_curve"
     bl_label = "draw_curve"
@@ -194,7 +194,7 @@ class create_leaf(bpy.types.Operator):
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        juju.create_leaf()
+        juju.create_leaf(juju.create_leaf_shape)
         return {'FINISHED'}
 
 class NODE_OT_create_trunk(bpy.types.Operator):

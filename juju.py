@@ -140,14 +140,15 @@ def draw_curve():
     curve = obj
     bpy.ops.wm.tool_set_by_id(name="builtin.draw")
 
-def create_leaf():
-    create_leaf_shape()
+def create_leaf(shapefunc):
+    #tree = obj
+    shapefunc()
     bpy.ops.object.modifier_add_node_group(asset_library_type='ESSENTIALS', asset_library_identifier="", relative_asset_identifier="nodes/geometry_nodes_essentials.blend/NodeTree/Array")
     #bpy.context.object.modifiers["Array"]["Socket_2"] = 'Curve'
-    bpy.context.object.modifiers["Array"]["Socket_2"] = 2
+    bpy.context.object.modifiers["Array"]["Socket_2"] = 2 #SHAPE
     #bpy.context.object.modifiers["Array"]["Socket_33"] = 'Distance'
-    bpy.context.object.modifiers["Array"]["Socket_33"] = 1
-    bpy.context.object.modifiers["Array"]["Socket_27"] = bpy.data.objects[curve]
+    bpy.context.object.modifiers["Array"]["Socket_33"] = 0 #COUNT METHOD
+    bpy.context.object.modifiers["Array"]["Socket_27"] = bpy.data.objects[curve] #tree
     bpy.context.object.modifiers["Array"]["Socket_17"] = True
     bpy.context.object.modifiers["Array"]["Socket_15"][0] = 140.
     bpy.context.object.modifiers["Array"]["Socket_15"][1] = 140.
@@ -163,7 +164,11 @@ def create_leaf_shape():
 
     obj =  bpy.ops.object.transforms_to_deltas(mode='ALL')
 
-
+def create_spike_shape():
+    bpy.ops.mesh.primitive_cone_add()
+    obj = bpy.context.object.scale[1] = 0.3
+    obj = bpy.context.object.scale[2] = 0.3
+    obj = bpy.context.object.scale[0] = 0.3
 
 def curve_test():
     #fibonnaci
@@ -185,7 +190,7 @@ def create_bezier_curve():
     #bpy.ops.curve.delete(type='VERT')
     bpy.ops.transform.translate(value=(-1, 0, 0))
 
-def fib curve():
+def fib_curve():
     val0 = 1.0
     val1 = 1.0
     old_value = 1.0
