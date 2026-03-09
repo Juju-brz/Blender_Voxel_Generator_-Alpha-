@@ -310,8 +310,8 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     node_tree_names : dict[typing.Callable, str] = {}
 
-    geometry_nodes_002 = create_trunk(node_tree_names)
-    node_tree_names[create_trunk] = geometry_nodes_002.name
+    create_trunk = create_trunk(node_tree_names)
+    node_tree_names[create_trunk] = create_trunk.name
 
     volume_simulation = volume_simulation_node_group(node_tree_names)
     node_tree_names[volume_simulation_node_group] = volume_simulation.name
