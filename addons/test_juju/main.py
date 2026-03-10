@@ -108,7 +108,7 @@ class create_simulation_node(bpy.types.Operator):
         juju.simulation_node()
         return {'FINISHED'}
 
-class subdivision_mesh(bpy.types.Operator):
+class MESH_OT_subdivision_mesh(bpy.types.Operator):
     bl_idname = "object.subdivision_mesh"
     bl_label = "subdivision_mesh"
     bl_options = {'REGISTER', 'UNDO'}
@@ -142,7 +142,7 @@ class draw_curve(bpy.types.Operator):
         juju.draw_curve()
         return {'FINISHED'}
 
-class create_leaf(bpy.types.Operator):
+class MESH_OT_create_leaf(bpy.types.Operator):
     bl_idname = "object.create_leaf"
     bl_label = "create_leaf"
     bl_options = {'REGISTER', 'UNDO'}
@@ -351,9 +351,9 @@ def register():
     bpy.utils.register_class(clean_scene)
     bpy.utils.register_class(create_simulation_node)
     bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
-    bpy.utils.register_class(subdivision_mesh)
+    bpy.utils.register_class(MESH_OT_subdivision_mesh)
     bpy.utils.register_class(draw_curve)
-    bpy.utils.register_class(create_leaf)
+    bpy.utils.register_class(MESH_OT_create_leaf)
     bpy.utils.register_class(NODE_OT_create_trunk)
     bpy.utils.register_class(create_bezier_curve)
     bpy.utils.register_class(create_spike)
@@ -378,9 +378,9 @@ def unregister():
     bpy.utils.unregister_class(MESH_OT_hide_mesh)
     bpy.utils.unregister_class(clean_scene)
     bpy.utils.unregister_class(create_simulation_node)
-    bpy.utils.unregister_class(subdivision_mesh)
+    bpy.utils.unregister_class(MESH_OT_subdivision_mesh)
     bpy.utils.unregister_class(draw_curve)
-    bpy.utils.unregister_class(create_leaf)
+    bpy.utils.unregister_class(MESH_OT_create_leaf)
     bpy.utils.unregister_class(NODE_OT_create_trunk)
     bpy.utils.unregister_class(create_bezier_curve)
     bpy.utils.unregister_class(create_spike)
