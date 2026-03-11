@@ -14,42 +14,7 @@ def clean_scene():
 #locator_position = [0, 0, 0]
 
 
-def create_voxel(biere, name="name"):
-    biere = bpy.ops.object.modifier_add(type='REMESH')
-    biere = bpy.context.object.modifiers["Remesh"].voxel_size = 0.123
-    biere = bpy.ops.object.modifier_apply(modifier="Remesh")
-    biere = bpy.context.active_object
-    biere.name = name
-
-
-def decimate():
-    bpy.ops.object.modifier_add(type='DECIMATE')
-    bpy.context.object.modifiers["Decimate"].decimate_type = 'DISSOLVE'
-    bpy.ops.object.modifier_apply(modifier="Decimate")
-
-
-def create_cube_vox():
-    biere = bpy.ops.mesh.primitive_cube_add()
-    create_voxel(biere, name="voxel_cube")
-
-
-def create_sphere_vox():
-    biere = bpy.ops.mesh.primitive_uv_sphere_add()
-    create_voxel(biere, name="voxel_sphere")
-
-def ground_generation(ground_num):
-
-    for i in range(-ground_num, ground_num + 1):
-        for j in range(-ground_num, ground_num + 1):
-            x_pos = locator_position[0] + (i * 2)
-            y_pos = locator_position[1] + (j * 2)
-            z_pos = locator_position[2]
-
-
-            bpy.ops.mesh.primitive_cube_add(location=(x_pos, y_pos, z_pos) )
-            bpy.context.object.name = f"ground"
-
-### VOLUME ###
+### VOLUME BEGIN ###
 def volume_displacement():
     #bpy.context.space_data.context = 'MODIFIER'
     bpy.ops.object.modifier_add(type='VOLUME_DISPLACE')
@@ -89,8 +54,6 @@ def mesh_to_volume():
 def new_collection(a, collection):
     a = collection.objects.link(bpy.context.active_object)
 
-
-
 def toggle_mesh_visibility():
     obj = bpy.context.active_object
     obj = bpy.data.objects["mesh_volume"]
@@ -127,12 +90,14 @@ def simulation_node():
     #bpy.ops.node.add_node(settings=[{"name":"node_tree", "value":"bpy.data.node_groups['Simulation Nodes']"}, {"name":"width", "value":"140"}, {"name":"name", "value":"'Simulation Nodes'"}], use_transform=True, type="GeometryNodeGroup")
 
 
-
 def subdivision_mesh():
     obj = bpy.context.active_object
     obj = bpy.ops.object.modifier_add(type='SUBSURF')
     obj = bpy.context.object.modifiers["Subdivision"].levels = 3
 
+### VOLUME END ###
+
+### PLANT BEGIN ###
 #curve = 0
 def draw_curve():
     bpy.ops.curve.primitive_bezier_curve_add(enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
@@ -224,3 +189,5 @@ def fib_curve():
         val0 += val1
         val1 = old_value
         print(val0)
+
+### PLANT END ###

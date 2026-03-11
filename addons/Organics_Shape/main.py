@@ -36,29 +36,8 @@ class VoxelTerrainProperties(bpy.types.PropertyGroup):
     )
 
 
-### GEOMETRY CLASS BEGIN ###
+### VOLUME CLASS BEGIN ###
 
-class MESH_OT_Create_Cube(bpy.types.Operator):
-    bl_idname = "object.create_cube_voxel"
-    bl_label = "create_cube_voxel"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    def execute(self, context):
-        
-        juju.create_cube_vox()
-        return {'FINISHED'}
-
-class MESH_OT_Create_Sphere(bpy.types.Operator):
-    bl_idname = "object.create_sphere_voxel"
-    bl_label = "create_sphere_voxel"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    def execute(self, context):
-        
-        juju.create_sphere_vox()
-        return {'FINISHED'}
-    
-    
 class MESH_OT_mesh_to_Volume(bpy.types.Operator):
     bl_idname = "object.mesh_to_volume"
     bl_label = "mesh_to_volume"
@@ -117,19 +96,7 @@ class MESH_OT_subdivision_mesh(bpy.types.Operator):
         juju.subdivision_mesh()
         return {'FINISHED'}
 
-### GEOMETRY CLASS  END ###
-
-## Voxel ##
-class Convert_Voxel(bpy.types.Operator):
-    bl_idname = "object.convert_voxel"
-    bl_label = "convert_voxel"
-    bl_options = {'REGISTER', 'UNDO'}
-    
-    def execute(self, context):
-        #props = context.scene.voxel_terrain_props
-        biere = bpy.context.active_object
-        juju.create_voxel(biere, name="name")
-        return {'FINISHED'}
+### VOLUME CLASS  END ###
 
 
 ### PLANT GENERATOR  BEGIN ###
@@ -159,7 +126,6 @@ class create_spike(bpy.types.Operator):
     def execute(self, context):
         juju.create_leaf(juju.create_spike_shape)
         return {'FINISHED'}
-
 
 class create_bezier_curve(bpy.types.Operator):
     bl_idname = "object.create_bezier_curve"
@@ -203,7 +169,7 @@ class NODE_OT_volume_simulation(bpy.types.Operator):
 
 
 ### 3D PANEL BEGIN ###
-class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
+class VIEW3D_PT_Organics_Generation(bpy.types.Panel):
     bl_label = "ORGANICS GENERATION"
     bl_idname = "VIEW3D_PT_Organics_Generation"
     bl_space_type = 'VIEW_3D'
@@ -213,16 +179,8 @@ class VIEW3D_PT_VoxelTerrainGeneration(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         props = context.scene.voxel_terrain_props
-        
+
         layout.operator("object.create_simulation_node", text="create_Geometry_node")
-        layout.operator("object.clean_scene", text="Clean Scene (beta)")
-        layout.label(text="Terrain Settings")
-        layout.prop(props, "ground_num_slider", text="Grid Size")
-        layout.operator("object.create_ground", text="Generate Ground")
-        layout.label(text="Geometry")
-        layout.operator("object.create_cube_voxel", text="Generate cube")
-        layout.operator("object.create_sphere_voxel", text="Generate sphere")
-        layout.operator("object.convert_voxel", text="Convert to Voxel")
 
 class VIEW3D_PT_VolumeGeneration(bpy.types.Panel):
     bl_label = "VOLUME"
@@ -335,23 +293,23 @@ classes = [
 ]
 
 def register():
-    bpy.utils.register_class(VIEW3D_PT_VoxelTerrainGeneration)
+    #bpy.utils.register_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.register_class(VIEW3D_PT_VolumeGeneration)
     bpy.utils.register_class(VIEW3D_PT_PlantGeneration)
-
+    bpy.utils.register_class(VIEW3D_PT_Organics_Generation)
     bpy.utils.register_class(OBJECT_OT_create_ground)
     bpy.utils.register_class(VoxelTerrainProperties)
+    bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
-    bpy.utils.register_class(MESH_OT_Create_Cube)
-    bpy.utils.register_class(MESH_OT_Create_Sphere)
-    bpy.utils.register_class(Convert_Voxel)
+    ## VOLUME ##
     bpy.utils.register_class(MESH_OT_mesh_to_Volume)
     bpy.utils.register_class(volume_to_Mesh)
     bpy.utils.register_class(MESH_OT_hide_mesh)
     bpy.utils.register_class(clean_scene)
     bpy.utils.register_class(create_simulation_node)
-    bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
     bpy.utils.register_class(MESH_OT_subdivision_mesh)
+
+    ## PLANT ##
     bpy.utils.register_class(draw_curve)
     bpy.utils.register_class(MESH_OT_create_leaf)
     bpy.utils.register_class(NODE_OT_create_trunk)
@@ -367,11 +325,10 @@ def unregister():
     bpy.utils.unregister_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.unregister_class(VIEW3D_PT_VolumeGeneration)
     bpy.utils.unregister_class(VIEW3D_PT_PlantGeneration)
-
     bpy.utils.unregister_class(VoxelTerrainProperties)
-    bpy.utils.unregister_class(MESH_OT_Create_Cube)
-    bpy.utils.unregister_class(MESH_OT_Create_Sphere)
-    bpy.utils.unregister_class(Convert_Voxel)
+
+
+    ## VOLUME ##
     bpy.utils.unregister_class(MESH_OT_mesh_to_Volume)
     bpy.utils.unregister_class(volume_to_Mesh)
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
@@ -379,6 +336,8 @@ def unregister():
     bpy.utils.unregister_class(clean_scene)
     bpy.utils.unregister_class(create_simulation_node)
     bpy.utils.unregister_class(MESH_OT_subdivision_mesh)
+
+    ## PLANT ##
     bpy.utils.unregister_class(draw_curve)
     bpy.utils.unregister_class(MESH_OT_create_leaf)
     bpy.utils.unregister_class(NODE_OT_create_trunk)
