@@ -13,6 +13,7 @@ from . import GeoNode
 
 
 ### CLASS BEGIN ###
+
 # class OBJECT_OT_create_ground(bpy.types.Operator):
 #     bl_idname = "object.create_ground"
 #     bl_label = "Create Ground"
@@ -26,14 +27,14 @@ from . import GeoNode
 #         return {'FINISHED'}
 
 
-class VoxelTerrainProperties(bpy.types.PropertyGroup):
-    ground_num_slider: bpy.props.IntProperty(
-        name="Ground Size",
-        description="Size_Grid",
-        default=5,
-        min=1,
-        max=20
-    )
+# class VoxelTerrainProperties(bpy.types.PropertyGroup):
+#     ground_num_slider: bpy.props.IntProperty(
+#         name="Ground Size",
+#         description="Size_Grid",
+#         default=5,
+#         min=1,
+#         max=20
+#     )
 
 
 ### VOLUME CLASS BEGIN ###
@@ -206,7 +207,6 @@ class VIEW3D_PT_Organics_Generation(bpy.types.Panel):
     
     def draw(self, context):
         layout = self.layout
-        props = context.scene.voxel_terrain_props
 
         layout.label(text="by juju")
         layout.operator("object.create_geometry_node", text="create_Geometry_node")
@@ -359,7 +359,7 @@ def register():
     bpy.utils.register_class(NODE_PT_Plant_Generator)
     bpy.utils.register_class(NODE_PT_Volume)
 
-    bpy.utils.register_class(VoxelTerrainProperties)
+    #bpy.utils.register_class(VoxelTerrainProperties)
     #bpy.types.Scene.voxel_terrain_props = bpy.props.PointerProperty(type=VoxelTerrainProperties)
 
     bpy.utils.register_class(create_geometry_node)
@@ -378,21 +378,26 @@ def register():
     bpy.utils.register_class(create_bezier_curve)
     bpy.utils.register_class(create_spike)
     bpy.utils.register_class(NODE_OT_volume_simulation)
-
     bpy.utils.register_class(NODE_OT_sprinkle)
     bpy.utils.register_class(curve_test)
+
     for cls in classes:
         bpy.utils.register_class(cls)
 
 def unregister():
     del bpy.types.Scene.voxel_terrain_props
-    bpy.utils.unregister_class(VIEW3D_PT_VoxelTerrainGeneration)
-    bpy.utils.unregister_class(VIEW3D_PT_Volume_Generation)
-    bpy.utils.unregister_class(VIEW3D_PT_PlantGeneration)
-    bpy.utils.unregister_class(VoxelTerrainProperties)
+    #bpy.utils.unregister_class(VIEW3D_PT_VoxelTerrainGeneration)
+    #bpy.utils.unregister_class(VoxelTerrainProperties)
 
     ## UI ##
     bpy.utils.unregister_class(VIEW3D_PT_Organics_Generation)
+    bpy.utils.unregister_class(VIEW3D_PT_Volume_Generation)
+    bpy.utils.unregister_class(VIEW3D_PT_PlantGeneration)
+    bpy.utils.unregister_class(NODE_PT_Organics_Generation)
+    bpy.utils.unregister_class(NODE_PT_Plant_Generator)
+    bpy.utils.unregister_class(NODE_PT_Volume)
+
+    bpy.utils.unregister_class(create_geometry_node)
 
     ## VOLUME ##
     bpy.utils.unregister_class(MESH_OT_mesh_to_Volume)
@@ -400,7 +405,6 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
     bpy.utils.unregister_class(MESH_OT_hide_mesh)
     bpy.utils.unregister_class(clean_scene)
-    bpy.utils.unregister_class(create_geometry_node)
     bpy.utils.unregister_class(MESH_OT_subdivision_mesh)
     bpy.utils.register_class(NODE_OT_Grid_Volume)
 
@@ -411,7 +415,6 @@ def unregister():
     bpy.utils.unregister_class(create_bezier_curve)
     bpy.utils.unregister_class(create_spike)
     bpy.utils.unregister_class(NODE_OT_volume_simulation)
-    bpy.utils.unregister_class(NODE_PT_Plant_Generator)
     bpy.utils.unregister_class(NODE_OT_sprinkle)
     bpy.utils.unregister_class(curve_test)
 
