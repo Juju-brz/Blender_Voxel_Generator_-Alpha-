@@ -17,10 +17,7 @@ with bpy.data.libraries.load(lib_path, link=True)  as (data_src, data_dst):
 
 """
 def create_trunk(node_tree_names: dict[typing.Callable, str]):
-    #create node
-    #create_trunk  = bpy.ops.node.new_geometry_nodes_modifier()
-
-    """Initialize Geometry Nodes.002 node group"""
+   """Initialize create_trunk node group"""
     create_trunk = bpy.data.node_groups.new(type='GeometryNodeTree', name="create_trunk")
 
     create_trunk.color_tag = 'NONE'
@@ -42,6 +39,17 @@ def create_trunk(node_tree_names: dict[typing.Callable, str]):
     geometry_socket_1.attribute_domain = 'POINT'
     geometry_socket_1.default_input = 'VALUE'
     geometry_socket_1.structure_type = 'AUTO'
+
+    # Socket Scale
+    scale_socket = create_trunk.interface.new_socket(name="Scale", in_out='INPUT', socket_type='NodeSocketFloat')
+    scale_socket.default_value = 0.10000000149011612
+    scale_socket.min_value = 0.0
+    scale_socket.max_value = 3.4028234663852886e+38
+    scale_socket.subtype = 'DISTANCE'
+    scale_socket.attribute_domain = 'POINT'
+    scale_socket.description = "Distance factor multiplied with the curve's radius attribute to define the resulting tube radius"
+    scale_socket.default_input = 'VALUE'
+    scale_socket.structure_type = 'AUTO'
 
     # Initialize create_trunk nodes
 
@@ -67,10 +75,6 @@ def create_trunk(node_tree_names: dict[typing.Callable, str]):
     if curve_to_tube.node_tree is None:
         print("Couldn't find node group Curve to Tube, failing")
         return
-    # Socket_5
-    curve_to_tube.inputs[1].default_value = 0.07000000029802322
-    bpy.ops.node.link(detach=False, drag_start=(-95.3793, -85.9915))
-
     # Socket_4
     curve_to_tube.inputs[2].default_value = 'Round'
     # Socket_26
@@ -121,10 +125,10 @@ def create_trunk(node_tree_names: dict[typing.Callable, str]):
     join_geometry.name = "Join Geometry"
 
     # Set locations
-    create_trunk.nodes["Group Input"].location = (-340.0, 0.0)
-    create_trunk.nodes["Group Output"].location = (296.19354248046875, 177.71116638183594)
-    create_trunk.nodes["Curve to Tube"].location = (-90.85443878173828, 19.948917388916016)
-    create_trunk.nodes["Join Geometry"].location = (153.02301025390625, 94.2607192993164)
+    create_trunk.nodes["Group Input"].location = (-422.30596923828125, 42.52294921875)
+    create_trunk.nodes["Group Output"].location = (398.9060974121094, 190.6674346923828)
+    create_trunk.nodes["Curve to Tube"].location = (-58.119361877441406, 34.6033935546875)
+    create_trunk.nodes["Join Geometry"].location = (238.68734741210938, 171.5737762451172)
 
     # Set dimensions
     create_trunk.nodes["Group Input"].width  = 140.0
@@ -147,9 +151,14 @@ def create_trunk(node_tree_names: dict[typing.Callable, str]):
         create_trunk.nodes["Group Input"].outputs[0],
         create_trunk.nodes["Curve to Tube"].inputs[0]
     )
-    # group_input.Geometry -> join_geometry.Geometry
+    # group_input.Scale -> curve_to_tube.Scale
     create_trunk.links.new(
-        create_trunk.nodes["Group Input"].outputs[0],
+        create_trunk.nodes["Group Input"].outputs[1],
+        create_trunk.nodes["Curve to Tube"].inputs[1]
+    )
+    # curve_to_tube.Mesh -> join_geometry.Geometry
+    create_trunk.links.new(
+        create_trunk.nodes["Curve to Tube"].outputs[0],
         create_trunk.nodes["Join Geometry"].inputs[0]
     )
     # join_geometry.Geometry -> group_output.Geometry
@@ -157,9 +166,9 @@ def create_trunk(node_tree_names: dict[typing.Callable, str]):
         create_trunk.nodes["Join Geometry"].outputs[0],
         create_trunk.nodes["Group Output"].inputs[0]
     )
-    # curve_to_tube.Mesh -> join_geometry.Geometry
+    # group_input.Geometry -> join_geometry.Geometry
     create_trunk.links.new(
-        create_trunk.nodes["Curve to Tube"].outputs[0],
+        create_trunk.nodes["Group Input"].outputs[0],
         create_trunk.nodes["Join Geometry"].inputs[0]
     )
 
@@ -312,7 +321,7 @@ if __name__ == "__main__":
 
     if obj is None:
         print("not object found")
-    else:
-        mod = obj.modifiers.new("Curve to Tube", type='NODES')
-        mod.node_group = create_trunk
+    # else:
+    #     mod = obj.modifiers.new("Curve to Tube", type='NODES')
+    #     mod.node_group = create_trunk
 

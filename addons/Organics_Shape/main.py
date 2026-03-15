@@ -233,7 +233,6 @@ class NODE_OT_juju_operator(bpy.types.Operator):
         return {'FINISHED'}
 
 
-
 class NODE_PT_juju_panel(bpy.types.Panel):
     bl_label = "Organics Generation"
     bl_idname = "NODE_PT_juju_panel"
