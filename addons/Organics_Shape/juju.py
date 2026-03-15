@@ -72,23 +72,13 @@ def volume_to_mesh():
     bpy.ops.object.modifier_apply(modifier="Volume to Mesh")
     subdivision_mesh()
 
-def simulation_node():
+def create_geometry_node():
     bpy.context.area.ui_type = 'GeometryNodeTree'
     screen = bpy.context.window.screen
 
-    #viewport = next(area for area in screen.areas if area.type == 'VIEW_3D')
-
-
-    #with bpy.context.temp_override(area=viewport):
-        #bpy.ops.screen.area_split(direction='VERTICAL', factor=0.5)
-
-
-    #screen.areas[0].type = 'NODE_EDITOR'
     bpy.ops.node.new_geometry_nodes_modifier()
-    #bpy.ops.node.add_zone(use_transform=True, input_node_type="GeometryNodeSimulationInput", output_node_type="GeometryNodeSimulationOutput", add_default_geometry_link=True)
-    bpy.data.node_groups["Geometry Nodes"].name = "Simulation Nodes"
-    #bpy.ops.node.add_node(settings=[{"name":"node_tree", "value":"bpy.data.node_groups['Simulation Nodes']"}, {"name":"width", "value":"140"}, {"name":"name", "value":"'Simulation Nodes'"}], use_transform=True, type="GeometryNodeGroup")
 
+    bpy.data.node_groups["Geometry Nodes"].name = "Geometry Nodes"
 
 def subdivision_mesh():
     obj = bpy.context.active_object

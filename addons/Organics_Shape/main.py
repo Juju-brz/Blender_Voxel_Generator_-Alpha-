@@ -78,13 +78,13 @@ class clean_scene(bpy.types.Operator):
         juju.clean_scene()
         return {'FINISHED'}
 
-class create_simulation_node(bpy.types.Operator):
-    bl_idname = "object.create_simulation_node"
-    bl_label = "create_simulation_node"
+class create_geometry_node(bpy.types.Operator):
+    bl_idname = "object.create_geometry_node"
+    bl_label = "create_geometry_node"
     bl_options = {'REGISTER', 'UNDO'}
 
     def execute(self, context):
-        juju.simulation_node()
+        juju.create_geometry_node()
         return {'FINISHED'}
 
 class MESH_OT_subdivision_mesh(bpy.types.Operator):
@@ -180,7 +180,7 @@ class VIEW3D_PT_Organics_Generation(bpy.types.Panel):
         layout = self.layout
         props = context.scene.voxel_terrain_props
 
-        layout.operator("object.create_simulation_node", text="create_Geometry_node")
+        layout.operator("object.create_geometry_node", text="create_Geometry_node")
 
 class VIEW3D_PT_VolumeGeneration(bpy.types.Panel):
     bl_label = "VOLUME"
@@ -259,6 +259,7 @@ class NODE_PT_juju_panel(bpy.types.Panel):
         layout.label(text = "CURVES")
         #layout.operator("object.create_trunk", text="create_trunk")
         layout.operator("object.volume_simulation", text="volume_simulation")
+        layout.operator("object.create_geometry_node", text="create geometry node")
 
 class NODE_PT_Plant_Generator(bpy.types.Panel):
     bl_label = "Plant_Generator"
@@ -293,7 +294,6 @@ classes = [
 ]
 
 def register():
-    #bpy.utils.register_class(VIEW3D_PT_VoxelTerrainGeneration)
     bpy.utils.register_class(VIEW3D_PT_VolumeGeneration)
     bpy.utils.register_class(VIEW3D_PT_PlantGeneration)
     bpy.utils.register_class(VIEW3D_PT_Organics_Generation)
@@ -306,7 +306,7 @@ def register():
     bpy.utils.register_class(volume_to_Mesh)
     bpy.utils.register_class(MESH_OT_hide_mesh)
     bpy.utils.register_class(clean_scene)
-    bpy.utils.register_class(create_simulation_node)
+    bpy.utils.register_class(create_geometry_node)
     bpy.utils.register_class(MESH_OT_subdivision_mesh)
 
     ## PLANT ##
@@ -334,7 +334,7 @@ def unregister():
     bpy.utils.unregister_class(OBJECT_OT_create_ground)
     bpy.utils.unregister_class(MESH_OT_hide_mesh)
     bpy.utils.unregister_class(clean_scene)
-    bpy.utils.unregister_class(create_simulation_node)
+    bpy.utils.unregister_class(create_geometry_node)
     bpy.utils.unregister_class(MESH_OT_subdivision_mesh)
 
     ## PLANT ##
