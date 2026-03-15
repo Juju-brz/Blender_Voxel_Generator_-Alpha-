@@ -458,6 +458,163 @@ def sprinkle_1_node_group(node_tree_names: dict[typing.Callable, str]):
 
     return sprinkle_1
 
+def grid_volume_1_node_group(node_tree_names: dict[typing.Callable, str]):
+    """Initialize Grid_Volume node group"""
+    grid_volume_1 = bpy.data.node_groups.new(type='GeometryNodeTree', name="Grid_Volume")
+
+    grid_volume_1.color_tag = 'NONE'
+    grid_volume_1.description = ""
+    grid_volume_1.default_group_node_width = 140
+    grid_volume_1.is_modifier = True
+    grid_volume_1.show_modifier_manage_panel = True
+
+    # grid_volume_1 interface
+
+    # Socket Geometry
+    geometry_socket = grid_volume_1.interface.new_socket(name="Geometry", in_out='OUTPUT', socket_type='NodeSocketGeometry')
+    geometry_socket.attribute_domain = 'POINT'
+    geometry_socket.default_input = 'VALUE'
+    geometry_socket.structure_type = 'AUTO'
+
+    # Socket Geometry
+    geometry_socket_1 = grid_volume_1.interface.new_socket(name="Geometry", in_out='INPUT', socket_type='NodeSocketGeometry')
+    geometry_socket_1.attribute_domain = 'POINT'
+    geometry_socket_1.default_input = 'VALUE'
+    geometry_socket_1.structure_type = 'AUTO'
+
+    # Socket Voxel Size
+    voxel_size_socket = grid_volume_1.interface.new_socket(name="Voxel Size", in_out='INPUT', socket_type='NodeSocketFloat')
+    voxel_size_socket.default_value = 0.06000000238418579
+    voxel_size_socket.min_value = 0.009999999776482582
+    voxel_size_socket.max_value = 3.4028234663852886e+38
+    voxel_size_socket.subtype = 'DISTANCE'
+    voxel_size_socket.attribute_domain = 'POINT'
+    voxel_size_socket.default_input = 'VALUE'
+    voxel_size_socket.structure_type = 'AUTO'
+
+    # Socket Band Width
+    band_width_socket = grid_volume_1.interface.new_socket(name="Band Width", in_out='INPUT', socket_type='NodeSocketInt')
+    band_width_socket.default_value = 2
+    band_width_socket.min_value = 1
+    band_width_socket.max_value = 100
+    band_width_socket.subtype = 'NONE'
+    band_width_socket.attribute_domain = 'POINT'
+    band_width_socket.description = "Width of the active voxel surface, in voxels"
+    band_width_socket.default_input = 'VALUE'
+    band_width_socket.structure_type = 'AUTO'
+
+    # Socket Threshold
+    threshold_socket = grid_volume_1.interface.new_socket(name="Threshold", in_out='INPUT', socket_type='NodeSocketFloat')
+    threshold_socket.default_value = 12.0
+    threshold_socket.min_value = -3.4028234663852886e+38
+    threshold_socket.max_value = 3.4028234663852886e+38
+    threshold_socket.subtype = 'NONE'
+    threshold_socket.attribute_domain = 'POINT'
+    threshold_socket.description = "Values larger than the threshold are inside the generated mesh"
+    threshold_socket.default_input = 'VALUE'
+    threshold_socket.structure_type = 'AUTO'
+
+    # Socket Adaptivity
+    adaptivity_socket = grid_volume_1.interface.new_socket(name="Adaptivity", in_out='INPUT', socket_type='NodeSocketFloat')
+    adaptivity_socket.default_value = 1.0
+    adaptivity_socket.min_value = 0.0
+    adaptivity_socket.max_value = 1.0
+    adaptivity_socket.subtype = 'FACTOR'
+    adaptivity_socket.attribute_domain = 'POINT'
+    adaptivity_socket.default_input = 'VALUE'
+    adaptivity_socket.structure_type = 'AUTO'
+
+    # Initialize grid_volume_1 nodes
+
+    # Node Group Input
+    group_input = grid_volume_1.nodes.new("NodeGroupInput")
+    group_input.name = "Group Input"
+
+    # Node Group Output
+    group_output = grid_volume_1.nodes.new("NodeGroupOutput")
+    group_output.name = "Group Output"
+    group_output.is_active_output = True
+
+    # Node Mesh to SDF Grid
+    mesh_to_sdf_grid = grid_volume_1.nodes.new("GeometryNodeMeshToSDFGrid")
+    mesh_to_sdf_grid.name = "Mesh to SDF Grid"
+
+    # Node Grid to Mesh
+    grid_to_mesh = grid_volume_1.nodes.new("GeometryNodeGridToMesh")
+    grid_to_mesh.name = "Grid to Mesh"
+
+    # Node Grid Laplacian
+    grid_laplacian = grid_volume_1.nodes.new("GeometryNodeGridLaplacian")
+    grid_laplacian.name = "Grid Laplacian"
+
+    # Set locations
+    grid_volume_1.nodes["Group Input"].location = (-500.4462585449219, 17.07179832458496)
+    grid_volume_1.nodes["Group Output"].location = (259.1262512207031, 59.60945510864258)
+    grid_volume_1.nodes["Mesh to SDF Grid"].location = (-228.1107177734375, 15.155731201171875)
+    grid_volume_1.nodes["Grid to Mesh"].location = (116.16053009033203, -26.823486328125)
+    grid_volume_1.nodes["Grid Laplacian"].location = (-48.14565658569336, 25.491989135742188)
+
+    # Set dimensions
+    grid_volume_1.nodes["Group Input"].width  = 140.0
+    grid_volume_1.nodes["Group Input"].height = 100.0
+
+    grid_volume_1.nodes["Group Output"].width  = 140.0
+    grid_volume_1.nodes["Group Output"].height = 100.0
+
+    grid_volume_1.nodes["Mesh to SDF Grid"].width  = 140.0
+    grid_volume_1.nodes["Mesh to SDF Grid"].height = 100.0
+
+    grid_volume_1.nodes["Grid to Mesh"].width  = 140.0
+    grid_volume_1.nodes["Grid to Mesh"].height = 100.0
+
+    grid_volume_1.nodes["Grid Laplacian"].width  = 140.0
+    grid_volume_1.nodes["Grid Laplacian"].height = 100.0
+
+
+    # Initialize grid_volume_1 links
+
+    # group_input.Geometry -> mesh_to_sdf_grid.Mesh
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Group Input"].outputs[0],
+        grid_volume_1.nodes["Mesh to SDF Grid"].inputs[0]
+    )
+    # grid_laplacian.Laplacian -> grid_to_mesh.Grid
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Grid Laplacian"].outputs[0],
+        grid_volume_1.nodes["Grid to Mesh"].inputs[0]
+    )
+    # mesh_to_sdf_grid.SDF Grid -> grid_laplacian.Grid
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Mesh to SDF Grid"].outputs[0],
+        grid_volume_1.nodes["Grid Laplacian"].inputs[0]
+    )
+    # grid_to_mesh.Mesh -> group_output.Geometry
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Grid to Mesh"].outputs[0],
+        grid_volume_1.nodes["Group Output"].inputs[0]
+    )
+    # group_input.Voxel Size -> mesh_to_sdf_grid.Voxel Size
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Group Input"].outputs[1],
+        grid_volume_1.nodes["Mesh to SDF Grid"].inputs[1]
+    )
+    # group_input.Band Width -> mesh_to_sdf_grid.Band Width
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Group Input"].outputs[2],
+        grid_volume_1.nodes["Mesh to SDF Grid"].inputs[2]
+    )
+    # group_input.Threshold -> grid_to_mesh.Threshold
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Group Input"].outputs[3],
+        grid_volume_1.nodes["Grid to Mesh"].inputs[1]
+    )
+    # group_input.Adaptivity -> grid_to_mesh.Adaptivity
+    grid_volume_1.links.new(
+        grid_volume_1.nodes["Group Input"].outputs[4],
+        grid_volume_1.nodes["Grid to Mesh"].inputs[2]
+    )
+
+    return grid_volume_1
 
 if __name__ == "__main__":
     node_tree_names : dict[typing.Callable, str] = {}
@@ -470,6 +627,9 @@ if __name__ == "__main__":
 
     sprinkle = sprinkle_1_node_group(node_tree_names)
     node_tree_names[sprinkle_1_node_group] = sprinkle.name
+
+    grid_volume = grid_volume_1_node_group(node_tree_names)
+    node_tree_names[grid_volume_1_node_group] = grid_volume.name
 
     obj = bpy.context.active_object
 
