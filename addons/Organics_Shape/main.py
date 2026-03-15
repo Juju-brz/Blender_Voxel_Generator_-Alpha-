@@ -161,6 +161,16 @@ class NODE_OT_volume_simulation(bpy.types.Operator):
         GeoNode.volume_simulation(node_tree_names)
         return {'FINISHED'}
 
+class NODE_OT_sprinkle(bpy.types.Operator):
+    bl_idname = "object.sprinkle"
+    bl_label = "sprinkle"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.sprinkle_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
 ### NODES  CLASS END ###
 
 ### CLASS END  ###
@@ -251,11 +261,10 @@ class NODE_PT_juju_panel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.label(text="My Nodes :", icon='NODETREE')
-        layout.separator()
+        #layout.label(text="My Nodes :", icon='NODETREE')
+        #layout.separator()
 
-        # Bouton qui lance l'operator
-        layout.operator("node.juju_operator", text="Create Nodes", icon='ADD')
+        #layout.operator("node.juju_operator", text="Create Nodes", icon='ADD')
         layout.label(text = "CURVES")
         #layout.operator("object.create_trunk", text="create_trunk")
         layout.operator("object.volume_simulation", text="volume_simulation")
@@ -278,10 +287,11 @@ class NODE_PT_Plant_Generator(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
 
-        layout.label(text="My Nodes :", icon='NODETREE')
-        layout.separator()
+        #layout.label(text="My Nodes :", icon='NODETREE')
+        #layout.separator()
 
         layout.operator("object.create_trunk", text="create_trunk")
+        layout.operator("object.sprinkle", text="Spinkle")
 ### NODE PANEL END ###
 
 ### UI END ###
@@ -317,6 +327,7 @@ def register():
     bpy.utils.register_class(create_spike)
     bpy.utils.register_class(NODE_OT_volume_simulation)
     bpy.utils.register_class(NODE_PT_Plant_Generator)
+    bpy.utils.register_class(NODE_OT_sprinkle)
     for cls in classes:
         bpy.utils.register_class(cls)
 
@@ -345,6 +356,8 @@ def unregister():
     bpy.utils.unregister_class(create_spike)
     bpy.utils.unregister_class(NODE_OT_volume_simulation)
     bpy.utils.unregister_class(NODE_PT_Plant_Generator)
+    bpy.utils.unregister_class(NODE_OT_sprinkle)
+
 
 if __name__ == "__main__":
     register()

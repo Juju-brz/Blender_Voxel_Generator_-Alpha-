@@ -296,6 +296,127 @@ def volume_simulation(node_tree_names: dict[typing.Callable, str]):
 
     return volume_simulation
 
+def sprinkle_1_node_group(node_tree_names: dict[typing.Callable, str]):
+    """Initialize Sprinkle node group"""
+    sprinkle_1 = bpy.data.node_groups.new(type='GeometryNodeTree', name="Sprinkle")
+
+    sprinkle_1.color_tag = 'NONE'
+    sprinkle_1.description = ""
+    sprinkle_1.default_group_node_width = 140
+    sprinkle_1.is_modifier = True
+    sprinkle_1.show_modifier_manage_panel = True
+
+    # sprinkle_1 interface
+
+    # Socket Geometry
+    geometry_socket = sprinkle_1.interface.new_socket(name="Geometry", in_out='OUTPUT', socket_type='NodeSocketGeometry')
+    geometry_socket.attribute_domain = 'POINT'
+    geometry_socket.default_input = 'VALUE'
+    geometry_socket.structure_type = 'AUTO'
+
+    # Socket Geometry
+    geometry_socket_1 = sprinkle_1.interface.new_socket(name="Geometry", in_out='INPUT', socket_type='NodeSocketGeometry')
+    geometry_socket_1.attribute_domain = 'POINT'
+    geometry_socket_1.default_input = 'VALUE'
+    geometry_socket_1.structure_type = 'AUTO'
+
+    # Socket Density
+    density_socket = sprinkle_1.interface.new_socket(name="Density", in_out='INPUT', socket_type='NodeSocketFloat')
+    density_socket.default_value = 10.0
+    density_socket.min_value = 0.0
+    density_socket.max_value = 3.4028234663852886e+38
+    density_socket.subtype = 'NONE'
+    density_socket.attribute_domain = 'POINT'
+    density_socket.default_input = 'VALUE'
+    density_socket.structure_type = 'AUTO'
+
+    # Socket Seed
+    seed_socket = sprinkle_1.interface.new_socket(name="Seed", in_out='INPUT', socket_type='NodeSocketInt')
+    seed_socket.default_value = 0
+    seed_socket.min_value = -2147483648
+    seed_socket.max_value = 2147483647
+    seed_socket.subtype = 'NONE'
+    seed_socket.attribute_domain = 'POINT'
+    seed_socket.default_input = 'VALUE'
+    seed_socket.structure_type = 'AUTO'
+
+    # Initialize sprinkle_1 nodes
+
+    # Node Group Input
+    group_input = sprinkle_1.nodes.new("NodeGroupInput")
+    group_input.name = "Group Input"
+
+    # Node Group Output
+    group_output = sprinkle_1.nodes.new("NodeGroupOutput")
+    group_output.name = "Group Output"
+    group_output.is_active_output = True
+
+    # Node Distribute Points on Faces
+    distribute_points_on_faces = sprinkle_1.nodes.new("GeometryNodeDistributePointsOnFaces")
+    distribute_points_on_faces.name = "Distribute Points on Faces"
+    distribute_points_on_faces.distribute_method = 'RANDOM'
+    distribute_points_on_faces.use_legacy_normal = False
+    # Selection
+    distribute_points_on_faces.inputs[1].default_value = True
+
+    # Node Join Geometry
+    join_geometry = sprinkle_1.nodes.new("GeometryNodeJoinGeometry")
+    join_geometry.name = "Join Geometry"
+
+    # Set locations
+    sprinkle_1.nodes["Group Input"].location = (-340.0, 0.0)
+    sprinkle_1.nodes["Group Output"].location = (259.3060607910156, 0.0)
+    sprinkle_1.nodes["Distribute Points on Faces"].location = (-141.48202514648438, -85.64603424072266)
+    sprinkle_1.nodes["Join Geometry"].location = (79.3060531616211, 39.9681510925293)
+
+    # Set dimensions
+    sprinkle_1.nodes["Group Input"].width  = 140.0
+    sprinkle_1.nodes["Group Input"].height = 100.0
+
+    sprinkle_1.nodes["Group Output"].width  = 140.0
+    sprinkle_1.nodes["Group Output"].height = 100.0
+
+    sprinkle_1.nodes["Distribute Points on Faces"].width  = 170.0
+    sprinkle_1.nodes["Distribute Points on Faces"].height = 100.0
+
+    sprinkle_1.nodes["Join Geometry"].width  = 140.0
+    sprinkle_1.nodes["Join Geometry"].height = 100.0
+
+
+    # Initialize sprinkle_1 links
+
+    # join_geometry.Geometry -> group_output.Geometry
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Join Geometry"].outputs[0],
+        sprinkle_1.nodes["Group Output"].inputs[0]
+    )
+    # group_input.Geometry -> distribute_points_on_faces.Mesh
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Group Input"].outputs[0],
+        sprinkle_1.nodes["Distribute Points on Faces"].inputs[0]
+    )
+    # distribute_points_on_faces.Points -> join_geometry.Geometry
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Distribute Points on Faces"].outputs[0],
+        sprinkle_1.nodes["Join Geometry"].inputs[0]
+    )
+    # group_input.Density -> distribute_points_on_faces.Density
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Group Input"].outputs[1],
+        sprinkle_1.nodes["Distribute Points on Faces"].inputs[4]
+    )
+    # group_input.Seed -> distribute_points_on_faces.Seed
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Group Input"].outputs[2],
+        sprinkle_1.nodes["Distribute Points on Faces"].inputs[6]
+    )
+    # group_input.Geometry -> join_geometry.Geometry
+    sprinkle_1.links.new(
+        sprinkle_1.nodes["Group Input"].outputs[0],
+        sprinkle_1.nodes["Join Geometry"].inputs[0]
+    )
+
+    return sprinkle_1
 
 
 if __name__ == "__main__":
@@ -307,6 +428,8 @@ if __name__ == "__main__":
     volume_simulation = volume_simulation_node_group(node_tree_names)
     node_tree_names[volume_simulation_node_group] = volume_simulation.name
 
+    sprinkle = sprinkle_1_node_group(node_tree_names)
+    node_tree_names[sprinkle_1_node_group] = sprinkle.name
 
     obj = bpy.context.active_object
 
