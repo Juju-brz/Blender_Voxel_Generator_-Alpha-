@@ -147,7 +147,7 @@ class NODE_OT_create_trunk(bpy.types.Operator):
 
     def execute(self, context):
         node_tree_names : dict[typing.Callable, str] = {}
-        GeoNode.create_trunk(node_tree_names)
+        GeoNode.create_trunk_1_node_group(node_tree_names)
         return {'FINISHED'}
 
 
