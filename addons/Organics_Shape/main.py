@@ -217,6 +217,27 @@ class NODE_OT_Grid_Volume(bpy.types.Operator):
         GeoNode.grid_volume_1_node_group(node_tree_names)
         return {'FINISHED'}
 
+
+class NODE_OT_Get_Normalize(bpy.types.Operator):
+    bl_idname = "object.get_normalize"
+    bl_label = "get normalize"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.getnormalize_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
+class NODE_OT_delete_points_of_curve(bpy.types.Operator):
+    bl_idname = "object.delete_points_of_curve"
+    bl_label = "delete points of curve"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.delete_points_of_curve_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
 ### NODES  CLASS END ###
 
 ### CLASS END  ###
@@ -341,6 +362,8 @@ class NODE_PT_Plant_Generator(bpy.types.Panel):
         layout.label(text='modify curve')
         layout.operator("object.create_trunk", text="create_trunk")
         layout.operator("object.sprinkle", text="Spinkle")
+        layout.operator("object.get_normalize", text="get normalize")
+        layout.operator("object.delete_points_of_curve", text="delete points of curve")
 
 class NODE_PT_Volume(bpy.types.Panel):
     bl_label = "VOLUME"
@@ -404,6 +427,8 @@ def register():
     bpy.utils.register_class(subdivid_curve)
     bpy.utils.register_class(fib_curve)
     bpy.utils.register_class(procedural_curve)
+    bpy.utils.register_class(NODE_OT_Get_Normalize)
+    bpy.utils.register_class(NODE_OT_delete_points_of_curve)
 
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -442,6 +467,9 @@ def unregister():
     bpy.utils.unregister_class(subdivid_curve)
     bpy.utils.unregister_class(fib_curve)
     bpy.utils.unregister_class(procedural_curve)
+    bpy.utils.unregister_class(NODE_OT_Get_Normalize)
+    bpy.utils.unregister_class(NODE_OT_delete_points_of_curve)
+
 
 if __name__ == "__main__":
     register()
