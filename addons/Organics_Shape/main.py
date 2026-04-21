@@ -14,28 +14,6 @@ from . import GeoNode
 
 ### CLASS BEGIN ###
 
-# class OBJECT_OT_create_ground(bpy.types.Operator):
-#     bl_idname = "object.create_ground"
-#     bl_label = "Create Ground"
-#     bl_description = "Generate a voxel ground"
-#     bl_options = {'REGISTER', 'UNDO'}
-#
-#     def execute(self, context):
-#         props = context.scene.voxel_terrain_props
-#         ground_num = int(props.ground_num_slider)
-#         juju.ground_generation(ground_num)
-#         return {'FINISHED'}
-
-
-# class VoxelTerrainProperties(bpy.types.PropertyGroup):
-#     ground_num_slider: bpy.props.IntProperty(
-#         name="Ground Size",
-#         description="Size_Grid",
-#         default=5,
-#         min=1,
-#         max=20
-#     )
-
 
 ### VOLUME CLASS BEGIN ###
 
@@ -245,7 +223,27 @@ class NODE_OT_create_leafs(bpy.types.Operator):
 
     def execute(self, context):
         node_tree_names : dict[typing.Callable, str] = {}
-        GeoNode.leafs_1_node_group(node_tree_names)
+        GeoNode.create_leafs_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
+class NODE_OT_branches(bpy.types.Operator):
+    bl_idname = "object.branches"
+    bl_label = "create branches"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.create_branches_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
+class NODE_OT_thickness(bpy.types.Operator):
+    bl_idname = "object.thickness"
+    bl_label = "thickness"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.thickness_1_node_group(node_tree_names)
         return {'FINISHED'}
 
 ### NODES  CLASS END ###
@@ -374,11 +372,16 @@ class NODE_PT_Plant_Generator(bpy.types.Panel):
 
         layout.operator("object.get_normalize", text="get normalize")
         layout.operator("object.delete_points_of_curve", text="delete points of curve")
+        layout.operator("object.thickness", text="thickness")
 
         layout.label(text='modify mesh')
         layout.operator("object.sprinkle", text="Spinkle")
         layout.label(text = 'Tree')
+        layout.operator("object.branches", text="create branches")
         layout.operator("object.create_leafs", text="create leafs")
+
+
+
 
 class NODE_PT_Volume(bpy.types.Panel):
     bl_label = "VOLUME"
@@ -399,6 +402,7 @@ class NODE_PT_Volume(bpy.types.Panel):
 
         layout.operator("object.volume_simulation", text="volume_simulation")
         layout.operator("object.grid_volume" , text="grid volume")
+
 
 
 ### NODE PANEL END ###
@@ -445,6 +449,8 @@ def register():
     bpy.utils.register_class(NODE_OT_Get_Normalize)
     bpy.utils.register_class(NODE_OT_delete_points_of_curve)
     bpy.utils.register_class(NODE_OT_create_leafs)
+    bpy.utils.register_class(NODE_OT_branches)
+    bpy.utils.register_class(NODE_OT_thickness)
 
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -486,6 +492,8 @@ def unregister():
     bpy.utils.unregister_class(NODE_OT_Get_Normalize)
     bpy.utils.unregister_class(NODE_OT_delete_points_of_curve)
     bpy.utils.unregister_class(NODE_OT_create_leafs)
+    bpy.utils.unregister_class(NODE_OT_branches)
+    bpy.utils.unregister_class(NODE_OT_thickness)
 
 
 if __name__ == "__main__":
