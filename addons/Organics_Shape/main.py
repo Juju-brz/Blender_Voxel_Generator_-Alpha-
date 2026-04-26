@@ -154,6 +154,17 @@ class fib_curve(bpy.types.Operator):
 ### PLANT GENERATOR  END ###
 
 ### NODES  CLASS BEGIN ###
+
+class NODE_OT_symmetry(bpy.types.Operator):
+    bl_idname = "object.symmetry"
+    bl_label = "symmetry"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.symmetry_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
 class NODE_OT_create_trunk(bpy.types.Operator):
     bl_idname = "object.create_trunk"
     bl_label = "create_trunk"
@@ -256,6 +267,16 @@ class NODE_OT_seeds_of_plants(bpy.types.Operator):
         GeoNode.seeds_of_plants_1_node_group(node_tree_names)
         return {'FINISHED'}
 
+class NODE_OT_noise(bpy.types.Operator):
+    bl_idname = "object.noise"
+    bl_label = "noise"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        node_tree_names : dict[typing.Callable, str] = {}
+        GeoNode.noise_1_node_group(node_tree_names)
+        return {'FINISHED'}
+
 ### NODES  CLASS END ###
 
 ### CLASS END  ###
@@ -355,6 +376,7 @@ class NODE_PT_Organics_Generation(bpy.types.Panel):
         layout = self.layout
 
         layout.operator("object.create_geometry_node", text="create geometry node")
+        layout.operator("object.symmetry", text="symmetry")
 
 
 class NODE_PT_Plant_Generator(bpy.types.Panel):
@@ -383,6 +405,7 @@ class NODE_PT_Plant_Generator(bpy.types.Panel):
         layout.operator("object.get_normalize", text="get normalize")
         layout.operator("object.delete_points_of_curve", text="delete points of curve")
         layout.operator("object.thickness", text="thickness")
+        layout.operator("object.noise", text="noise")
 
         layout.label(text='modify mesh')
         layout.operator("object.sprinkle", text="Spinkle")
@@ -439,6 +462,8 @@ def register():
 
 
     bpy.utils.register_class(create_geometry_node)
+    bpy.utils.register_class(NODE_OT_symmetry)
+
     ## VOLUME ##
     bpy.utils.register_class(MESH_OT_mesh_to_Volume)
     bpy.utils.register_class(volume_to_Mesh)
@@ -464,6 +489,7 @@ def register():
     bpy.utils.register_class(NODE_OT_branches)
     bpy.utils.register_class(NODE_OT_thickness)
     bpy.utils.register_class(NODE_OT_seeds_of_plants)
+    bpy.utils.register_class(NODE_OT_noise)
 
     for cls in classes:
         bpy.utils.register_class(cls)
@@ -482,6 +508,7 @@ def unregister():
     bpy.utils.unregister_class(NODE_PT_Plant_Generator)
 
     bpy.utils.unregister_class(create_geometry_node)
+    bpy.utils.unregister_class(NODE_OT_symmetry)
 
     ## VOLUME ##
     bpy.utils.unregister_class(MESH_OT_mesh_to_Volume)
@@ -508,6 +535,7 @@ def unregister():
     bpy.utils.unregister_class(NODE_OT_branches)
     bpy.utils.unregister_class(NODE_OT_thickness)
     bpy.utils.unregister_class(NODE_OT_seeds_of_plants)
+    bpy.utils.unregister_class(NODE_OT_noise)
 
 
 if __name__ == "__main__":
